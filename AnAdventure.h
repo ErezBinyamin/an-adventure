@@ -13,18 +13,18 @@
 
 const char * PLAYER_SPRITE[] = {"###", "###"};
 
-const char * EMPTY_SPACE_COMPRESSED[] = {	"                    ",\
-																					"                    ",\
-																					"     EMPTYNESS      ",\
-																					"                    ",\
-																					"                    ",\
-																					"                    ",\
-																					"                    ",\
-																					"                    ",\
-																					"                    ",\
-																					"                    ",\
-																					"                    ",\
-																					"                    ",};
+const char * STARTSCREEN_COMPRESSED[] = {	" X  X  X    X  XX   ",\
+																					"X X XX X   X X X X  ",\
+																					"XXX X XX   XXX X X  ",\
+																					"X X X  X   X X XX   ",\
+																					"X X XXXX X  X XXX   ",\
+																					"X X XX   XX X  X    ",\
+																					"X X X    X XX  X    ",\
+																					" X  XXXX X  X  X    ",\
+																					"X  X XXX XXXX       ",\
+																					"X  X X X XX         ",\
+																					"X  X XX  X          ",\
+																					" XX  X X XXXX       ",};
 
 const char * CASTLE_COMPRESSED[] = {	"XXXXX X X  X X XXXXX",\
 																			"X   XXXXX  XXXXX   X",\
@@ -187,7 +187,153 @@ const char * BLUE_MAZE_ENTRY[] = { 	"XXXX X X XX X X XXXX",\
 																		"                    ",\
 																		"                    ",\
 																		"XXXXXXX      XXXXXXX"};
-//
+
+
+// red upper left
+const char * RED_MAZE_UL[] = {	"XXXXXXXXXXXXXXXXXXXX",\
+																"                    ",\
+																"                    ",\
+																"XXXXXXX      XXXXXXX",\
+																"      X      X      ",\
+																"      X      X      ",\
+																"XXX   X      X   XXX",\
+																"XXXXXXX      XXXXXXX",\
+																"X     X      X     X",\
+																"X     X      X     X",\
+																"X  X  X  XX  X  X  X",\
+																"X  X  X  XX  X  X  X"};
+// red upper right
+const char * RED_MAZE_UR[] = {	"XXXXXXXXXXXXXXXXXXXX",\
+																"         XX         ",\
+																"         XX         ",\
+																"XXXXXXX  XX  XXXXXXX",\
+																"      X  XX  X      ",\
+																"      X  XX  X      ",\
+																"X  X XX  XX  XX X  X",\
+																"X  X XXXXXXXXXX X  X",\
+																"X  X X        X X  X",\
+																"X  X X        X X  X",\
+																"X  X X  X  X  X X  X",\
+																"X  XXX  X  X  XXX  X"};
+// red bottom left
+const char * RED_MAZE_BL[] = {	"X  X  X  XX  X  X  X",\
+																"X  X  X  XX  X  X  X",\
+																"X  X  X  XX  X  X  X",\
+																"X  X            X  X",\
+																"X  X            X  X",\
+																"X  X XXXXXXXXXX X  X",\
+																"   X X        X X   ",\
+																"   X X        X X   ",\
+																"XXXXXX        XXXXXX",\
+																"                    ",\
+																"                    ",\
+																"XXXXXXXXX  XXXXXXXXX"};
+// Red_ bottom right
+const char * RED_MAZE_BR[] = {	"X  XXX  X  X  XXX  X",\
+																"X       X  X       X",\
+																"X       X  X       X",\
+																"X       X  X       X",\
+																"X       X  X       X",\
+																"XXXXXXXXX  XXXXXXXXX",\
+																"     X        X     ",\
+																"     X        X     ",\
+																"XX   X        X   XX",\
+																"     X        X     ",\
+																"     X        X     ",\
+																"XXXXXXXXX  XXXXXXXXX"};
+
+// Orange  top
+const char * ORANGE_MAZE_TOP[] = {		"XXXXXXX      XXXXXXX",\
+																			"  X              X  ",\
+																			"  X              X  ",\
+																			"X X   XXXXXXXX   X X",\
+																			"X X   XXXXXXXX   X X",\
+																			"  X      XX      X  ",\
+																			"  X      XX      X  ",\
+																			"XXX X    XX    X XXX",\
+																			"XXX X    XX    X XXX",\
+																			"    X    XX    X    ",\
+																			"    X XX XX XX X    ",\
+																			"XXXXX XX XX XX XXXXX"};
+// Organge middle
+const char * ORANGE_MAZE_MIDDLE[] = {	"XXXXX XX XX XX XXXXX",\
+																			"      XX    XX      ",\
+																			"      XX    XX      ",\
+																			"XX    XX    XX    XX",\
+																			"XX    XX    XX    XX",\
+																			"    XXXX    XXXX    ",\
+																			"    X          X    ",\
+																			"XXX X XXXXXXXX X XXX",\
+																			"XXX X XX    XX X XXX",\
+																			"  X X XX    XX X X  ",\
+																			"  X X XX XX XX X X  ",\
+																			"X X X XX XX XX X X X"};
+// Orange bottom
+const char * ORANGE_MAZE_BOTTOM[] = {	"X X X XX XX XX X X X",\
+																			"  X X XX XX XX X X  ",\
+																			"  X   XX XX XX   X  ",\
+																			"  X   XX XX XX   X  ",\
+																			"  XXXXXX XX XXXXXX  ",\
+																			"         XX         ",\
+																			"         XX         ",\
+																			"  XXXX   XX   XXXX  ",\
+																			"  X      XX      X  ",\
+																			"  X      XX      X  ",\
+																			"  X      XX      X  ",\
+																			"XXXXXXXXXXXXXXXXXXXX"};
+// orange upper left
+const char * ORANGE_MAZE_UL[] = {	"XXXX  XXXXXXXX  XXXX",\
+																	"      X      X      ",\
+																	"      X      X      ",\
+																	"XXXXXXX      XXXXXXX",\
+																	"XXXXXXX      XXXXXXX",\
+																	"                    ",\
+																	"                    ",\
+																	"X  XXXXXXXXXXXXXX  X",\
+																	"X  XXXXXXXXXXXXXX  X",\
+																	"   X            X   ",\
+																	"   X            X   ",\
+																	"XXXX  XXXXXXXX  XXXX"};
+
+// orange bottom left
+const char * ORANGE_MAZE_BL[] = {	"XXXX  XXXXXXXX  XXXX",\
+																	"X       X           ",\
+																	"X  XXXXXX           ",\
+																	"X  XXXXXX    XXXXXXX",\
+																	"   X         XXXXXXX",\
+																	"   X         X      ",\
+																	"XXXX         X      ",\
+																	"XXXX         X  XXXX",\
+																	"XXXX  XXXXXXXX  XXXX",\
+																	"X     X   X     X   ",\
+																	"X     X   X     X   ",\
+																	"XXXX  XXXXXXXX  XXXX"};
+// orange upper right
+const char * ORANGE_MAZE_UR[] = {	"XXXXXXXXXXXXXXXXXXXX",\
+																	"          X        X",\
+																	"          XXXXXXX  X",\
+																	"XXXXXXXX  XXXXXXX  X",\
+																	"XXXXXXXX        X   ",\
+																	"       X        X   ",\
+																	"    XXXXXXX   XXXXXX",\
+																	"X   XXXXXXX   XX   X",\
+																	"X   XX   X    XX   X",\
+																	"    XX   X    XX   X",\
+																	"  X XX   X    XX X X",\
+																	"X X XX X XX X XX X X"};
+// orange bottom right
+const char * ORANGE_MAZE_BR[] = {	"X X XX X XX X XX X X",\
+																	"  X    X    X    X  ",\
+																	"  X    X    X    X  ",\
+																	"XXXXXXXX    XXXXXXXX",\
+																	"XXXXXXXX    XXXXXXXX",\
+																	"                    ",\
+																	"                    ",\
+																	"XXXXXXX      XXXXXXX",\
+																	"XXXXXXX      XXXXXXX",\
+																	"                    ",\
+																	"                    ",\
+																	"XXXXXXX      XXXXXXX"};
 
 const char * BRIDGE[] = {	"BBBB     BBBB",\
 													"BBBB     BBBB",\
@@ -252,6 +398,10 @@ struct Screens
 
 struct GameScreens
 {
+	GameScreens * ptr_up;
+	GameScreens * ptr_down;
+	GameScreens * ptr_left;
+	GameScreens * ptr_right;
 	short ScreenID;
 	char * compressedContent;
 	int content[CURRENT_SCREEN_HEIGHT][CURRENT_SCREEN_WIDTH];

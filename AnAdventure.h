@@ -335,16 +335,16 @@ const char * ORANGE_MAZE_BR[] = {	"X X XX X XX X XX X X",\
 																	"                    ",\
 																	"XXXXXXX      XXXXXXX"};
 
-const char * BRIDGE[] = {	"BBBB     BBBB",\
-													"BBBB     BBBB",\
-													"   B     B   ",\
-													"   B     B   ",\
-													"   B     B   ",\
-													"   B     B   ",\
-													"   B     B   ",\
-													"   B     B   ",\
-													"BBBB     BBBB",\
-													"BBBB     BBBB",\
+const char * BRIDGE[] = {	"BBBBCCCCCBBBB",\
+													"BBBBCCCCCBBBB",\
+													"   BCCCCCB   ",\
+													"   BCCCCCB   ",\
+													"   BCCCCCB   ",\
+													"   BCCCCCB   ",\
+													"   BCCCCCB   ",\
+													"   BCCCCCB   ",\
+													"BBBBCCCCCBBBB",\
+													"BBBBCCCCCBBBB",\
 												};
 
 const char * KEY[] = {"nn---O"};
@@ -366,6 +366,7 @@ enum
     CURRENT_SCREEN_HEIGHT = 48,
 		FPS = 20,
 		MAX_NUMBER_OF_SCREENS = 2,
+		WALL_WIDTH = 3
 };
 
 enum GameState
@@ -415,6 +416,14 @@ struct Player
 	Position position;
 	Size spriteSize;
 	Color playerColorPair;
+};
+
+struct Wall
+{
+	char content;
+	Position position;
+	Size spriteSize;
+	Color wallSpriteColorPair;
 };
 
 struct Game

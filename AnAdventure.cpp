@@ -28,7 +28,7 @@ void InitPlayer(Game & game, Player & player);
 void ResetPlayer(const Game & game, Player & player);
 int HandleInput(const Game & game, GameScreens * ptr_screen, Player & player);
 //void UpdateGame(const Game & game, const Screen & screen, Player & player);
-void DrawGame(const Game & game, GameScreens * ptr_screen, Items * ptr_item, const Player & player);
+void DrawGame(const Game & game, GameScreens * ptr_screen, Items * ptr_item, Items * ptr_item2, Items * ptr_item3, const Player & player);
 void MovePlayer(const Game & game, GameScreens * ptr_screen, Player & player, short dx, short dy);
 void DrawPlayer(const Player & player, const char * sprite[]);
 void DrawScreen(const GameScreens * ptr_screen);
@@ -142,6 +142,8 @@ int main()
 
 
 	InitItems(game, yellowKey, &yellowCastle, CURRENT_SCREEN_HEIGHT / 2, CURRENT_SCREEN_WIDTH / 5, KEYS_SWORD_SPRITE_HEIGHT, KEYS_SWORD_SPRITE_WIDTH, YELLOW_SCREEN_COLOR_PAIR, YELLOW_COLOR_ITEM_PAIR);
+	InitItems(game, cyanKey, &cyanCastle, CURRENT_SCREEN_HEIGHT / 2, CURRENT_SCREEN_WIDTH / 5, KEYS_SWORD_SPRITE_HEIGHT, KEYS_SWORD_SPRITE_WIDTH, CYAN_SCREEN_COLOR_PAIR, CYAN_COLOR_ITEM_PAIR);
+	InitItems(game, blackKey, &blackCastle, CURRENT_SCREEN_HEIGHT / 2, CURRENT_SCREEN_WIDTH / 5, KEYS_SWORD_SPRITE_HEIGHT, KEYS_SWORD_SPRITE_WIDTH, BLACK_SCREEN_COLOR_PAIR, BLACK_COLOR_ITEM_PAIR);
 //	InitItems(game, blackKey, );
 //	InitItems(game, cyanKey);
 //	InitItems(game, sword);
@@ -172,7 +174,7 @@ while(!quit)
 //Make current Screent an element  player object
 				//DrawGame(game, currentScreen, player);
 
-				DrawGame(game, ptr_currentScreen, &yellowKey, player);
+				DrawGame(game, ptr_currentScreen, &yellowKey, &cyanKey, &blackKey, player);
 
 				// RefreshScreen(); // curses utils
 				}
@@ -235,7 +237,6 @@ void InitScreen(GameScreens & ScreenToInit, short ScreenID, const char * compres
 		}
 	}
 }
-
 
 void InitGame(Game & game)
 {
@@ -316,10 +317,12 @@ int HandleInput(const Game & game, GameScreens * ptr_screen, Player & player)
 //
 //}
 //
-void DrawGame(const Game & game, GameScreens * ptr_screen, Items * ptr_item, const Player & player)
+void DrawGame(const Game & game, GameScreens * ptr_screen, Items * ptr_item, Items * ptr_item2, Items * ptr_item3, const Player & player)
 {
 	DrawScreen(ptr_screen);
 	DrawItems(ptr_item);
+	DrawItems(ptr_item2);
+	DrawItems(ptr_item3);
 	DrawPlayer(player, PLAYER_SPRITE);
 }
 
@@ -424,17 +427,21 @@ short drawWithColorPair = 0;
 
 void DrawItems(const Items * ptr_item)
 {
-	short drawWithColorPair = WHITE_SCREEN_COLOR_PAIR;
-
-	for (short height = 0; height < ptr_item->spriteSize.height; height++)
+	if (ptr_item->currentItemScreen == ptr_currentScreen)
 	{
-		attron(COLOR_PAIR(YELLOW_COLOR_ITEM_PAIR));
-		mvprintw(ptr_item->position.y + height, ptr_item->position.x, "%s", KEY[height]);
-		attroff(COLOR_PAIR(YELLOW_COLOR_ITEM_PAIR));
-//		for (short width = 0; width < ptr_item->spriteSize.width; width++)
-//		{
-//			DrawCharacter(ptr_item->position.x + width, ptr_item->position.y + height, 'A');
-//		}
+
+		short drawWithColorPair = WHITE_SCREEN_COLOR_PAIR;
+
+		for (short height = 0; height < ptr_item->spriteSize.height; height++)
+		{
+			attron(COLOR_PAIR(ptr_item->singlePartColorPair.colorPair));
+			mvprintw(ptr_item->position.y + height, ptr_item->position.x, "%s", KEY[height]);
+			attroff(COLOR_PAIR(ptr_item->xPartColorPair.colorPair));
+	//		for (short width = 0; width < ptr_item->spriteSize.width; width++)
+	//		{
+	//			DrawCharacter(ptr_item->position.x + width, ptr_item->position.y + height, 'A');
+	//		}
+		}
 	}
 }
 

@@ -29,6 +29,8 @@ void InitializeColor()
   init_pair(RED_SCREEN_COLOR_PAIR,RED_FG,RED_FG); // red  drawing Color on screens
 	init_pair(WHITE_SCREEN_COLOR_PAIR,WHITE_FG,WHITE_FG); // wite drawing Color on screens
 
+	init_pair(BLACK_COLOR_ITEM_PAIR, BLACK_FG, WHITE_BG); // black items
+	init_pair(CYAN_COLOR_ITEM_PAIR, CYAN_FG, WHITE_BG); // cyan items
 	init_pair(YELLOW_COLOR_ITEM_PAIR, YELLOW_FG, WHITE_BG); // yellow items
 	init_pair(ITEM_COLOR_PAIR,ITEM_COLOR_FG,ITEM_COLOR_BG); // block items
 }

@@ -21,16 +21,19 @@
 using namespace std;
 
 void InitGame(Game & game);
-void InitWallSprite(Wall & wallToInit, char brick, int x, int y, int width, int height, short itemColorPair);
+void InitWallSprite(Wall & wallToInit, char brick, short x, short y, short width, short height, short itemColorPair);
 void InitScreen(GameScreens & ScreenToInit, short ScreenID, const char * compressed[], short drawingColor_pair, short backGroundColor_pair, GameScreens * ptr_up, GameScreens * ptr_down, GameScreens * ptr_left, GameScreens * ptr_right, Wall & wallToDraw, const signed short & wallType = 0);
+void InitItems(Game & game, Items & ItemToInit, GameScreens * ptr_startScreen, short y, short x, short h, short w, short fullColorPair, short singleColorPair);
 void InitPlayer(Game & game, Player & player);
 void ResetPlayer(const Game & game, Player & player);
 int HandleInput(const Game & game, GameScreens * ptr_screen, Player & player);
 //void UpdateGame(const Game & game, const Screen & screen, Player & player);
-void DrawGame(const Game & game, GameScreens * ptr_screen, const Player & player);
-void MovePlayer(const Game & game, GameScreens * ptr_screen, Player & player, int dx, int dy);
+void DrawGame(const Game & game, GameScreens * ptr_screen, Items * ptr_item, const Player & player);
+void MovePlayer(const Game & game, GameScreens * ptr_screen, Player & player, short dx, short dy);
 void DrawPlayer(const Player & player, const char * sprite[]);
 void DrawScreen(const GameScreens * ptr_screen);
+void DrawItems(const Items * ptr_item);
+
 //bool occupied(const Player & player, int dx, int dy, const Screen & screen);
 
 // Global handlers
@@ -75,7 +78,14 @@ int main()
 	Wall leftWall;
 	Wall rightWall;
 
-	GameScreens * ptr_startscreen = &redHallway	;
+	Items yellowKey;
+	Items blackKey;
+	Items cyanKey;
+	Items sword;
+	Items chalice;
+	Items magnet;
+
+	GameScreens * ptr_startscreen = &yellowCastle	;
 	ptr_currentScreen = ptr_startscreen;
 
 	Game game;
@@ -119,15 +129,32 @@ int main()
 	InitScreen(orangeMazeBL, 22, ORANGE_MAZE_BL, YELLOW_SCREEN_COLOR_PAIR, 3, &orangeMazeUL, &orangeMazeUL, &orangeMazeUR, &orangeMazeBR, leftWall);
 	InitScreen(orangeMazeBR, 23, ORANGE_MAZE_BR, YELLOW_SCREEN_COLOR_PAIR, 3, &orangeMazeUR, &redHallway, &orangeMazeBL, &orangeMazeUL, leftWall);
 
-	InitGame(game);
-	InitPlayer(game, player);
+	GameScreens * currentItemScreen;
+	short colorMatrix[MAX_ITEM_SIZE_Y][MAX_ITEM_SIZE_X];
+	Position position;
+	Size spriteSize;
+	Color xPartColorPair;
+	Color singlePartColorPair;
+	Color walkwayColorPair;
 
+	InitGame(game);
+// void InitItems(Game & game, Items & ItemToInit, GameScreens * ptr_startScreen, short y, short x, short h, short w, short fullColorPair, short singleColorPair)
+
+
+	InitItems(game, yellowKey, &yellowCastle, CURRENT_SCREEN_HEIGHT / 2, CURRENT_SCREEN_WIDTH / 5, KEYS_SWORD_SPRITE_HEIGHT, KEYS_SWORD_SPRITE_WIDTH, YELLOW_SCREEN_COLOR_PAIR, YELLOW_COLOR_ITEM_PAIR);
+//	InitItems(game, blackKey, );
+//	InitItems(game, cyanKey);
+//	InitItems(game, sword);
+//	InitItems(game, chalice);
+//	InitItems(game, magnet);
+
+	InitPlayer(game, player);
 
 	bool quit = false;
 	int input;
 
 	clock_t lastTime = clock();
-
+// ################# MAIN LOOP #########################
 while(!quit)
 	{
   input = HandleInput(game, ptr_currentScreen, player);
@@ -145,7 +172,7 @@ while(!quit)
 //Make current Screent an element  player object
 				//DrawGame(game, currentScreen, player);
 
-				DrawGame(game, ptr_currentScreen, player);
+				DrawGame(game, ptr_currentScreen, &yellowKey, player);
 
 				// RefreshScreen(); // curses utils
 				}
@@ -180,9 +207,9 @@ void InitScreen(GameScreens & ScreenToInit, short ScreenID, const char * compres
 	ScreenToInit.ptr_left = ptr_left;
 	ScreenToInit.ptr_right = ptr_right;
 
-	for (int height = 0; height < SCREEN_HEIGHT_IN_BLOCKS; height++)
+	for (short height = 0; height < SCREEN_HEIGHT_IN_BLOCKS; height++)
 	{
-		for (int width = 0; width < SCREEN_WIDTH_IN_BLOCKS; width++)
+		for (short width = 0; width < SCREEN_WIDTH_IN_BLOCKS; width++)
 		{
 			for (short blockheight = 0; blockheight < heightOfaBlock; blockheight++)
 			{
@@ -199,9 +226,9 @@ void InitScreen(GameScreens & ScreenToInit, short ScreenID, const char * compres
 	{
 		xPos = (wallType < 0) ? 11 : (CURRENT_SCREEN_WIDTH - wallToDraw.spriteSize.width - 11);
 		// build walls, if requested, left -1, no wall 0, right 1
-		for (int h = 0; h < wallToDraw.spriteSize.height; h++)
+		for (short h = 0; h < wallToDraw.spriteSize.height; h++)
 		{
-			for (int w = 0; w < wallToDraw.spriteSize.width; w++)
+			for (short w = 0; w < wallToDraw.spriteSize.width; w++)
 			{
 				ScreenToInit.content[h][xPos + w] = wallToDraw.content;
 			}
@@ -214,10 +241,11 @@ void InitGame(Game & game)
 {
 	game.windowSize.width = ScreenWidth();
 	game.windowSize.height = ScreenHeight();
+	game.gameType = INITIAL_GAMETYPE;
 	game.currentState = GS_PLAY;
 }
 
-void InitWallSprite(Wall & wallToInit, char brick, int x, int y, int width, int height, short itemColorPair)
+void InitWallSprite(Wall & wallToInit, char brick, short x, short y, short width, short height, short itemColorPair)
 {
 wallToInit.content = brick;
 wallToInit.position.x = x;
@@ -226,6 +254,22 @@ wallToInit.spriteSize.width = width;
 wallToInit.spriteSize.height = height;
 wallToInit.wallSpriteColorPair.colorPair = itemColorPair;
 }
+
+void InitItems(Game & game, Items & ItemToInit, GameScreens * ptr_startScreen, short y, short x, short h, short w, short fullColorPair, short singleColorPair)
+{
+//	if (game.gameType = 1)
+//	{
+		ItemToInit.currentItemScreen = ptr_startScreen;
+		ItemToInit.position.y = y;
+		ItemToInit.position.x = x;
+		ItemToInit.spriteSize.height = h;
+		ItemToInit.spriteSize.width = w;
+		ItemToInit.xPartColorPair.colorPair = fullColorPair;
+		ItemToInit.singlePartColorPair.colorPair = singleColorPair;
+		ItemToInit.walkwayColorPair.colorPair = WHITE_SCREEN_COLOR_PAIR;
+//	}
+}
+
 
 void InitPlayer(Game & game, Player & player)
 {
@@ -272,14 +316,15 @@ int HandleInput(const Game & game, GameScreens * ptr_screen, Player & player)
 //
 //}
 //
-void DrawGame(const Game & game, GameScreens * ptr_screen, const Player & player)
+void DrawGame(const Game & game, GameScreens * ptr_screen, Items * ptr_item, const Player & player)
 {
 	DrawScreen(ptr_screen);
+	DrawItems(ptr_item);
 	DrawPlayer(player, PLAYER_SPRITE);
 }
 
 
-void MovePlayer(const Game & game, GameScreens * ptr_screen, Player & player, int dx, int dy)
+void MovePlayer(const Game & game, GameScreens * ptr_screen, Player & player, short dx, short dy)
 {
 	bool collision = false;
 
@@ -310,9 +355,9 @@ void MovePlayer(const Game & game, GameScreens * ptr_screen, Player & player, in
 			// it checks for every move if the desired position is an empty space.
 			// The Player can also cross 'C' which makes it passible to create stuff
 			// like bridge and the entries to the castles
-			for (int h = 0; h < player.spriteSize.height; h++)
+			for (short h = 0; h < player.spriteSize.height; h++)
 			{
-				for (int w = 0; w < player.spriteSize.width; w++)
+				for (short w = 0; w < player.spriteSize.width; w++)
 				{
 					if ((ptr_screen->content[player.position.y + dy + h][player.position.x + dx + w] != ' ') && (ptr_screen->content[player.position.y + dy + h][player.position.x + dx + w] != 'C'))
 					{
@@ -354,33 +399,13 @@ void MovePlayer(const Game & game, GameScreens * ptr_screen, Player & player, in
 //	collision = false;
 }
 
-
-//bool occupied(const Player & player, int dx, int dy, const Screen & screen)
-//{
-//	for (int x = 0; x < PLAYER_SPRITE_WIDTH; x++)
-//		{
-//			for (int y = 0; y < PLAYER_SPRITE_HEIGHT; y++)
-//			{
-//				// if (player.position.x + dx)
-//			}
-//		}
-//return false;
-//}
-
-
-void DrawPlayer(const Player & player, const char * sprite[])
-{
-	DrawSprite(player.position.x, player.position.y, PLAYER_SPRITE, player.spriteSize.height, player.playerColorPair.colorPair);
-}
-
-
 void DrawScreen(const GameScreens * ptr_screen)
 {
 short drawWithColorPair = 0;
 
- for(int h = 0; h < ptr_screen->ScreensSize.ScreenSizeInChars.height; h++)
+ for(short h = 0; h < ptr_screen->ScreensSize.ScreenSizeInChars.height; h++)
 	{
-		for (int w = 0; w < ptr_screen->ScreensSize.ScreenSizeInChars.width ; w++)
+		for (short w = 0; w < ptr_screen->ScreensSize.ScreenSizeInChars.width ; w++)
 		{
 			drawWithColorPair = (ptr_screen->content[h][w] != ' ') ? ptr_screen->screenDefaultDrawingColorPair.colorPair : ptr_screen->screenDefaultBackgroundColorPair.colorPair;
 			if ((ptr_screen->content[h][w] == 'L') || (ptr_screen->content[h][w] == 'R')) {drawWithColorPair = BLACK_SCREEN_COLOR_PAIR;} // ONLY TEMPORARY
@@ -395,4 +420,25 @@ short drawWithColorPair = 0;
 	mvprintw(2,0,"DOWN: %x", ptr_screen->ptr_down);
 	mvprintw(3,0,"LEFT: %x", ptr_screen->ptr_left);
 	mvprintw(4,0,"RIGHT: %x", ptr_screen->ptr_right);
+}
+
+void DrawItems(const Items * ptr_item)
+{
+	short drawWithColorPair = WHITE_SCREEN_COLOR_PAIR;
+
+	for (short height = 0; height < ptr_item->spriteSize.height; height++)
+	{
+		attron(COLOR_PAIR(YELLOW_COLOR_ITEM_PAIR));
+		mvprintw(ptr_item->position.y + height, ptr_item->position.x, "%s", KEY[height]);
+		attroff(COLOR_PAIR(YELLOW_COLOR_ITEM_PAIR));
+//		for (short width = 0; width < ptr_item->spriteSize.width; width++)
+//		{
+//			DrawCharacter(ptr_item->position.x + width, ptr_item->position.y + height, 'A');
+//		}
+	}
+}
+
+void DrawPlayer(const Player & player, const char * sprite[])
+{
+	DrawSprite(player.position.x, player.position.y, PLAYER_SPRITE, player.spriteSize.height, player.playerColorPair.colorPair);
 }

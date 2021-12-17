@@ -11,6 +11,29 @@
 #include <string>
 #include <vector>
 
+enum
+{
+    PLAYER_SPRITE_WIDTH = 3,
+    PLAYER_SPRITE_HEIGHT = 2,
+    PLAYER_MOVEMENT_AMOUNT_X = 2,
+    PLAYER_MOVEMENT_AMOUNT_Y = 1,
+    SCREEN_WIDTH_IN_BLOCKS = 20, // 10 Chars width of Block 	##########\
+																															##########\
+																															##########\
+																															##########
+    SCREEN_HEIGHT_IN_BLOCKS = 12, // 4 Chars height of block
+    CURRENT_SCREEN_WIDTH = 200,
+    CURRENT_SCREEN_HEIGHT = 48,
+		FPS = 20,
+		MAX_NUMBER_OF_SCREENS = 2,
+		WALL_WIDTH = 3,
+		KEYS_SWORD_SPRITE_WIDTH = 5,
+		KEYS_SWORD_SPRITE_HEIGHT = 1,
+		MAX_ITEM_SIZE_X = 9,
+		MAX_ITEM_SIZE_Y = 10,
+		INITIAL_GAMETYPE = 1
+};
+
 const char * PLAYER_SPRITE[] = {"###", "###"};
 
 const char * STARTSCREEN_COMPRESSED[] = {	" X  X  X    X  XX   ",\
@@ -335,39 +358,87 @@ const char * ORANGE_MAZE_BR[] = {	"X X XX X XX X XX X X",\
 																	"                    ",\
 																	"XXXXXXX      XXXXXXX"};
 
-const char * BRIDGE[] = {	"BBBBCCCCCBBBB",\
-													"BBBBCCCCCBBBB",\
-													"   BCCCCCB   ",\
-													"   BCCCCCB   ",\
-													"   BCCCCCB   ",\
-													"   BCCCCCB   ",\
-													"   BCCCCCB   ",\
-													"   BCCCCCB   ",\
-													"BBBBCCCCCBBBB",\
-													"BBBBCCCCCBBBB",\
-												};
+const char * BRIDGE[] = {	"X\\CCCCC/X",\
+													"XXCCCCCXX",\
+													" XCCCCCX ",\
+													" XCCCCCX ",\
+													" XCCCCCX ",\
+													" XCCCCCX ",\
+													" XCCCCCX ",\
+													" XCCCCCX ",\
+													"XXCCCCCXX",\
+													"X/CCCCC\\X"};
 
-const char * KEY[] = {"nn---O"};
 
-const char * SWORD[] = {"<-----"};
+// color matrix 0 = ignored, 1 = full color, 2 = foreground/background, 3 = walkway/background
+const short BRIDGE_COLORPAIR_MATRIX[MAX_ITEM_SIZE_Y][MAX_ITEM_SIZE_X] = {	1,2,3,3,3,3,3,2,1,\
+																																					1,1,3,3,3,3,3,1,1,\
+																																					0,1,3,3,3,3,3,1,0,\
+																																					0,1,3,3,3,3,3,1,0,\
+																																					0,1,3,3,3,3,3,1,0,\
+																																					0,1,3,3,3,3,3,1,0,\
+																																					0,1,3,3,3,3,3,1,0,\
+																																					0,1,3,3,3,3,3,1,0,\
+																																					1,1,3,3,3,3,3,1,1,\
+																																					1,2,3,3,3,3,3,2,1};
 
-enum
-{
-    PLAYER_SPRITE_WIDTH = 3,
-    PLAYER_SPRITE_HEIGHT = 2,
-    PLAYER_MOVEMENT_AMOUNT_X = 2,
-    PLAYER_MOVEMENT_AMOUNT_Y = 1,
-    SCREEN_WIDTH_IN_BLOCKS = 20, // 10 Chars width of Block 	##########\
-																															##########\
-																															##########\
-																															##########
-    SCREEN_HEIGHT_IN_BLOCKS = 12, // 4 Chars height of block
-    CURRENT_SCREEN_WIDTH = 200,
-    CURRENT_SCREEN_HEIGHT = 48,
-		FPS = 20,
-		MAX_NUMBER_OF_SCREENS = 2,
-		WALL_WIDTH = 3
-};
+const char * KEY[] = {"ww--O"};
+
+const short KEY_COLORPAIR_MATRIX[MAX_ITEM_SIZE_Y][MAX_ITEM_SIZE_X] = {	2,2,2,2,2,0,0,0,0,\
+																																				0,0,0,0,0,0,0,0,0,\
+																																				0,0,0,0,0,0,0,0,0,\
+																																				0,0,0,0,0,0,0,0,0,\
+																																				0,0,0,0,0,0,0,0,0,\
+																																				0,0,0,0,0,0,0,0,0,\
+																																				0,0,0,0,0,0,0,0,0,\
+																																				0,0,0,0,0,0,0,0,0,\
+																																				0,0,0,0,0,0,0,0,0,\
+																																				0,0,0,0,0,0,0,0,0};
+
+const char * SWORD[] = {"<----"};
+
+const short SWORD_COLORPAIR_MATRIX[MAX_ITEM_SIZE_Y][MAX_ITEM_SIZE_X] = {	2,2,2,2,2,0,0,0,0,\
+																																					0,0,0,0,0,0,0,0,0,\
+																																					0,0,0,0,0,0,0,0,0,\
+																																					0,0,0,0,0,0,0,0,0,\
+																																					0,0,0,0,0,0,0,0,0,\
+																																					0,0,0,0,0,0,0,0,0,\
+																																					0,0,0,0,0,0,0,0,0,\
+																																					0,0,0,0,0,0,0,0,0,\
+																																					0,0,0,0,0,0,0,0,0,\
+																																					0,0,0,0,0,0,0,0,0};
+
+const char * CHALICE[] = {	"X    X",
+														"\\X__X/",
+														"  ||  ",
+														"/XXXX\\"};
+
+const short CHALICE_COLORPAIR_MATRIX[MAX_ITEM_SIZE_Y][MAX_ITEM_SIZE_X] = {	1,0,0,0,0,1,0,0,0,\
+																																						2,1,0,0,1,2,0,0,0,\
+																																						0,0,2,2,0,0,0,0,0,\
+																																						2,1,1,1,1,2,0,0,0,\
+																																						0,0,0,0,0,0,0,0,0,\
+																																						0,0,0,0,0,0,0,0,0,\
+																																						0,0,0,0,0,0,0,0,0,\
+																																						0,0,0,0,0,0,0,0,0,\
+																																						0,0,0,0,0,0,0,0,0,\
+																																						0,0,0,0,0,0,0,0,0};
+
+const char * MAGNET[] =	{	" XXXX ",
+													"XX  XX",
+													"XX  XX",
+													"XX  XX"};
+
+const short MAGNET_COLORPAIR_MATRIX[MAX_ITEM_SIZE_Y][MAX_ITEM_SIZE_X] = {	0,1,1,1,1,0,0,0,0,\
+																																					1,1,0,0,1,1,0,0,0,\
+																																					1,1,0,0,1,1,0,0,0,\
+																																					1,1,0,0,1,1,0,0,0,\
+																																					0,0,0,0,0,0,0,0,0,\
+																																					0,0,0,0,0,0,0,0,0,\
+																																					0,0,0,0,0,0,0,0,0,\
+																																					0,0,0,0,0,0,0,0,0,\
+																																					0,0,0,0,0,0,0,0,0,\
+																																					0,0,0,0,0,0,0,0,0};
 
 enum GameState
 {
@@ -376,14 +447,14 @@ enum GameState
 
 struct Position
 {
-	int x;
-	int y;
+	short x;
+	short y;
 };
 
 struct Size
 {
-	int width;
-	int height;
+	short width;
+	short height;
 };
 
 struct Color
@@ -405,7 +476,7 @@ struct GameScreens
 	GameScreens * ptr_right;
 	short ScreenID;
 	char * compressedContent;
-	int content[CURRENT_SCREEN_HEIGHT][CURRENT_SCREEN_WIDTH];
+	short content[CURRENT_SCREEN_HEIGHT][CURRENT_SCREEN_WIDTH];
 	Screens ScreensSize;
 	Color screenDefaultDrawingColorPair;
 	Color screenDefaultBackgroundColorPair;
@@ -418,6 +489,17 @@ struct Player
 	Color playerColorPair;
 };
 
+struct Items
+{
+	GameScreens * currentItemScreen;
+	short colorMatrix[MAX_ITEM_SIZE_Y][MAX_ITEM_SIZE_X];
+	Position position;
+	Size spriteSize;
+	Color xPartColorPair;
+	Color singlePartColorPair;
+	Color walkwayColorPair;
+};
+
 struct Wall
 {
 	char content;
@@ -428,6 +510,7 @@ struct Wall
 
 struct Game
 {
+	unsigned short gameType; // 1,2,3
 	Size windowSize;
 	GameState currentState;
 	clock_t gameTimer;
@@ -497,24 +580,6 @@ struct Game
 //    0D8F,                  //  DD   D
 //    0D3F,                  //   DDDD
 //
-//static const byte objectGfxChallise [] =
-//{
-//    9,
-//    0x81,                  // K    K
-//    0x7E,                  // KKKKKK
-//    0x18,                  //   KK
-//    0x7E                   // KKKKKK
-//};
-//
-//// Object #11 : State FF : Graphic
-//static const byte objectGfxMagnet [] =
-//{
-//    8,
-//    0x7E,                  //  MMMM
-//		0xC3,                  // MM  MM
-//		0xC3,                  // MM  MM
-//		0xC3,                  // MM  MM
-//};
 //
 //// Object #1 States 940FF (Graphic)
 //static const byte objectGfxPort [] =
